@@ -53,8 +53,10 @@ class TypeIvenstiment extends Component
 
     public function edit(TypeInvestimentModel $typeInvestiment)
     {
-        $this->name       = $typeInvestiment->name;
-        $this->percentage = $typeInvestiment->percentage;
+        $this->form->name       = $typeInvestiment->name;
+        $this->form->percentage = $typeInvestiment->percentage;
+        $this->form->id = $typeInvestiment->id;
+
 
     }
 }
