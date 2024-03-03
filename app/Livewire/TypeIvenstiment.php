@@ -17,7 +17,9 @@ class TypeIvenstiment extends Component
     public ?string $sortBy = null;
 
     public TypeIvenstimentForm $form;
+
     protected $debug = true;
+
     protected $queryString = [
         'order'  => ['except' => ''],
         'sortBy' => ['except' => ''],
@@ -26,15 +28,9 @@ class TypeIvenstiment extends Component
     public function render(
     ): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|Factory|View|Application {
         return view('livewire.type-investiment', [
-            'typeInvestiments' => TypeInvestimentModel::where('user_id', auth()->user()->id)->when(
-                $this->sortBy,
-                function (Builder $builder) {
-                    return $builder->orderBy($this->sortBy, $this->order);
-                }
-            )->get(),
+            'typeInvestiments' => $this->getInvestiments(),
         ]);
     }
-
 
     public function sort($column): void
     {
@@ -46,11 +42,30 @@ class TypeIvenstiment extends Component
         $this->sortBy = $column;
     }
 
-    public function save()
+    public function save():void
     {
+        $sumPercentage = TypeInvestimentModel::query()->where('user_id',auth()->user()->id)->sum('percentage');
+        if(is_null($this->form->id)){
+            $sum = $sumPercentage += intval($this->form->percentage);
+            if (intval($sum) > TypeInvestimentModel::TOTAL_PERCENTAGE) {
+                $this->addError('invalidPercentage', 'Seu percentual está passando de 100% no total');
+                $this->form->reset();
+                return;
+            }
+        }else{
+            $typeInvestiment = TypeInvestimentModel::query()->find($this->form->id);
+            if($typeInvestiment->percentage < intval($this->form->percentage)){
+                $sum = $sumPercentage += intval($this->form->percentage);
+                if (intval($sum) > TypeInvestimentModel::TOTAL_PERCENTAGE) {
+                    $this->addError('invalidPercentage', 'Seu percentual está passando de 100% no total');
+                    $this->form->reset();
+                    return;
+                }
+            }
+        }
         $this->form->save();
-        $this->form->name = '';
-        $this->form->percentage = '';
+        $this->form->reset();
+
     }
 
     public function edit(TypeInvestimentModel $typeInvestiment)
@@ -60,13 +75,25 @@ class TypeIvenstiment extends Component
 
     public function delete($id)
     {
-
         $investment = TypeInvestimentModel::find($id);
-        if($investment->user_id === auth()->user()->id)
-        {
+
+        if ($investment->user_id === auth()->user()->id) {
             $investment->delete();
-        }else{
+        } else {
             abort(403);
         }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getInvestiments()
+    {
+        return TypeInvestimentModel::where('user_id', auth()->user()->id)->when(
+            $this->sortBy,
+            function (Builder $builder) {
+                return $builder->orderBy($this->sortBy, $this->order);
+            }
+        )->get();
     }
 }

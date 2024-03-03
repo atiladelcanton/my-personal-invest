@@ -1,10 +1,6 @@
 import './bootstrap';
 
-import Alpine from 'alpinejs';
 import 'flowbite';
-window.Alpine = Alpine;
-
-Alpine.start();
 
 
 var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
