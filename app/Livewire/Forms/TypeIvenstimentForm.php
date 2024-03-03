@@ -15,7 +15,7 @@ class TypeIvenstimentForm extends Form
     #[Validate('required|min:3')]
     public string $name = '';
 
-    #[Validate(['required',new InvalidPercentage()])]
+    #[Validate(['required', new InvalidPercentage()])]
     public string $percentage = '';
 
     public function save()
@@ -32,7 +32,7 @@ class TypeIvenstimentForm extends Form
 
     public function setInvestiment(TypeInvestimentModel $typeInvestiment): void
     {
-        $this->id = $typeInvestiment->id;
+        $this->id         = $typeInvestiment->id;
         $this->name       = $typeInvestiment->name;
         $this->percentage = $typeInvestiment->percentage;
     }

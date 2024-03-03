@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class TypeInvestiment extends Model
 {
     use HasFactory;
-    const TOTAL_PERCENTAGE=100;
+    public const TOTAL_PERCENTAGE = 100;
 }

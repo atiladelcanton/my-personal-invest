@@ -42,23 +42,29 @@ class TypeIvenstiment extends Component
         $this->sortBy = $column;
     }
 
-    public function save():void
+    public function save(): void
     {
-        $sumPercentage = TypeInvestimentModel::query()->where('user_id',auth()->user()->id)->sum('percentage');
-        if(is_null($this->form->id)){
+        $sumPercentage = TypeInvestimentModel::query()->where('user_id', auth()->user()->id)->sum('percentage');
+
+        if(is_null($this->form->id)) {
             $sum = $sumPercentage += intval($this->form->percentage);
+
             if (intval($sum) > TypeInvestimentModel::TOTAL_PERCENTAGE) {
                 $this->addError('invalidPercentage', 'Seu percentual está passando de 100% no total');
                 $this->form->reset();
+
                 return;
             }
-        }else{
+        } else {
             $typeInvestiment = TypeInvestimentModel::query()->find($this->form->id);
-            if($typeInvestiment->percentage < intval($this->form->percentage)){
+
+            if($typeInvestiment->percentage < intval($this->form->percentage)) {
                 $sum = $sumPercentage += intval($this->form->percentage);
+
                 if (intval($sum) > TypeInvestimentModel::TOTAL_PERCENTAGE) {
                     $this->addError('invalidPercentage', 'Seu percentual está passando de 100% no total');
                     $this->form->reset();
+
                     return;
                 }
             }
