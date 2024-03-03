@@ -12,10 +12,10 @@ class TypeIvenstimentForm extends Form
     public ?int $id = null;
 
     #[Validate('required|min:3')]
-    public string $name;
+    public string $name ='';
 
     #[Validate('required')]
-    public string $percentage;
+    public string $percentage ='';
 
     public function save()
     {
@@ -25,7 +25,12 @@ class TypeIvenstimentForm extends Form
             'percentage' => intval($this->percentage),
             'user_id'    => auth()->user()->id,
         ]);
-        $this->name       = '';
-        $this->percentage = '';
+    }
+
+    public function setInvestiment(TypeInvestimentModel $typeInvestiment)
+    {
+
+        $this->name       = $typeInvestiment->name;
+        $this->percentage = $typeInvestiment->percentage;
     }
 }

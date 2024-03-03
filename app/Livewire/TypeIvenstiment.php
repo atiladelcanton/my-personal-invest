@@ -17,7 +17,7 @@ class TypeIvenstiment extends Component
     public ?string $sortBy = null;
 
     public TypeIvenstimentForm $form;
-
+    protected $debug = true;
     protected $queryString = [
         'order'  => ['except' => ''],
         'sortBy' => ['except' => ''],
@@ -49,12 +49,24 @@ class TypeIvenstiment extends Component
     public function save()
     {
         $this->form->save();
+        $this->form->name = '';
+        $this->form->percentage = '';
     }
 
     public function edit(TypeInvestimentModel $typeInvestiment)
     {
-        $this->name       = $typeInvestiment->name;
-        $this->percentage = $typeInvestiment->percentage;
+        $this->form->setInvestiment($typeInvestiment);
+    }
 
+    public function delete($id)
+    {
+
+        $investment = TypeInvestimentModel::find($id);
+        if($investment->user_id === auth()->user()->id)
+        {
+            $investment->delete();
+        }else{
+            abort(403);
+        }
     }
 }
