@@ -5,6 +5,6 @@
         </x-header>
     </x-slot>
     <x-container>
-        
+
     </x-container>
 </x-app-layout>
