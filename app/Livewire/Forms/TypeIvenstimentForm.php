@@ -17,7 +17,7 @@ class TypeIvenstimentForm extends Form
     #[Validate(['required'])]
     public int $percentage = 0;
 
-    public function save()
+    public function save(): void
     {
 
         $this->validate();
