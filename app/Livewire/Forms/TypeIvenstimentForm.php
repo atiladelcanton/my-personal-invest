@@ -3,7 +3,6 @@
 namespace App\Livewire\Forms;
 
 use App\Models\TypeInvestiment as TypeInvestimentModel;
-use App\Rules\InvalidPercentage;
 use Livewire\Attributes\{Locked, Validate};
 use Livewire\Form;
 
@@ -15,8 +14,8 @@ class TypeIvenstimentForm extends Form
     #[Validate('required|min:3')]
     public string $name = '';
 
-    #[Validate(['required', new InvalidPercentage()])]
-    public string $percentage = '';
+    #[Validate(['required'])]
+    public int $percentage = 0;
 
     public function save()
     {

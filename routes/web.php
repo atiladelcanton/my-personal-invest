@@ -4,11 +4,10 @@ use App\Http\Controllers\{ProfileController};
 use App\Livewire\TypeIvenstiment;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
+
+    Route::get('/', \App\Livewire\Dashboard::class)->name('dashboard');
+    Route::get('/actions', \App\Livewire\Actions::class)->name('actions');
     #region Type Investiment Controller
     Route::get('/type-investments', TypeIvenstiment::class)->name('type_investiments');
     #endregion

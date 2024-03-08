@@ -4,8 +4,6 @@ namespace App\Livewire;
 
 use App\Livewire\Forms\TypeIvenstimentForm;
 use App\Models\TypeInvestiment as TypeInvestimentModel;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 use Livewire\Component;
@@ -26,7 +24,7 @@ class TypeIvenstiment extends Component
     ];
 
     public function render(
-    ): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|Factory|View|Application {
+    ): View {
         return view('livewire.type-investiment', [
             'typeInvestiments' => $this->getInvestiments(),
         ]);
@@ -45,14 +43,11 @@ class TypeIvenstiment extends Component
     public function save(): void
     {
         $sumPercentage = TypeInvestimentModel::query()->where('user_id', auth()->user()->id)->sum('percentage');
-
         if(is_null($this->form->id)) {
             $sum = $sumPercentage += intval($this->form->percentage);
 
             if (intval($sum) > TypeInvestimentModel::TOTAL_PERCENTAGE) {
                 $this->addError('invalidPercentage', 'Seu percentual está passando de 100% no total');
-                $this->form->reset();
-
                 return;
             }
         } else {
@@ -63,8 +58,6 @@ class TypeIvenstiment extends Component
 
                 if (intval($sum) > TypeInvestimentModel::TOTAL_PERCENTAGE) {
                     $this->addError('invalidPercentage', 'Seu percentual está passando de 100% no total');
-                    $this->form->reset();
-
                     return;
                 }
             }

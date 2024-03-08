@@ -14,17 +14,38 @@ it('should render sucessul component Type Investiment', function () {
     Livewire::test(TypeIvenstiment::class)->assertStatus(200);
     get(route('type_investiments'))->assertSeeLivewire(TypeIvenstiment::class);
 });
-it('should store type investiment by user', function () {
+it('should store type investment by user', function () {
     $user = User::factory()->create();
     actingAs($user);
-    \App\Models\TypeInvestiment::create([
-        'name'       => 'Fundo Emergencia',
-        'percentage' => 60,
-        'user_id'    => $user->id,
-    ]);
+
+    Livewire::test(TypeIvenstiment::class)
+            ->set('form.name', 'Fundo Emergency')
+            ->set('form.percentage', 40)
+            ->set('user_id', $user->id)
+            ->call('save');
+
     assertDatabaseHas('type_investiments', [
-        'name'       => 'Fundo Emergencia',
-        'percentage' => 60,
+        'name'       => 'Fundo Emergency',
+        'percentage' => 40,
         'user_id'    => $user->id,
     ]);
+});
+
+it('should showing alert message with percentage grantest One Hundred store', function () {
+    $user = User::factory()->create();
+    actingAs($user);
+
+    for ($i = 0; $i < 2; $i++) {
+        Livewire::test(TypeIvenstiment::class)
+            ->set('form.name', 'Fundo Emergency ' . $i)
+            ->set('form.percentage', 40)
+            ->set('user_id', $user->id)
+            ->call('save');
+    }
+    Livewire::test(TypeIvenstiment::class)
+        ->set('form.name', 'Fundo Emergency')
+        ->set('form.percentage', 80)
+        ->set('user_id', $user->id)
+        ->call('save')
+        ->assertHasErrors(['invalidPercentage']);
 });
