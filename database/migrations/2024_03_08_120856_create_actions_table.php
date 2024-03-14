@@ -11,13 +11,15 @@ return new class () extends Migration {
         Schema::create('actions', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class, 'user_id')->index();
-            $table->string('active_code')->index();
+            $table->foreignIdFor(\App\Models\TypeInvestiment::class, 'type_investiment_id')->index();
+            $table->string('active_code')->nullable()->index();
             $table->float('price');
-            $table->integer('recommended_percentage');
+            $table->float('last_dividend');
+            $table->integer('recommended_percentage')->nullable();
             $table->integer('magic_number');
             $table->integer('total_quotas_contributed');
             $table->integer('missing_for_magic_number');
-            $table->string('type');
+            $table->string('type')->index();
             $table->timestamps();
         });
     }

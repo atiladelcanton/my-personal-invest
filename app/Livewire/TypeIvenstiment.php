@@ -3,13 +3,10 @@
 namespace App\Livewire;
 
 use App\Livewire\Forms\TypeIvenstimentForm;
-use App\Models\TypeInvestiment;
-use App\Models\TypeInvestiment as TypeInvestimentModel;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\{TypeInvestiment, TypeInvestiment as TypeInvestimentModel};
+use Illuminate\Database\Eloquent\{Builder, Model};
 use Illuminate\View\View;
 use Livewire\Component;
-use phpDocumentor\Reflection\Types\Collection;
 
 class TypeIvenstiment extends Component
 {
@@ -18,7 +15,6 @@ class TypeIvenstiment extends Component
     public ?string $sortBy = null;
 
     public TypeIvenstimentForm $form;
-
 
     protected mixed $queryString = [
         'order'  => ['except' => ''],
@@ -88,10 +84,7 @@ class TypeIvenstiment extends Component
         }
     }
 
-    /**
-     * @return Model
-     */
-    public function getInvestiments(): Model
+    public function getInvestiments(): \Illuminate\Database\Eloquent\Collection
     {
         return TypeInvestimentModel::where('user_id', auth()->user()->id)->when(
             $this->sortBy,
