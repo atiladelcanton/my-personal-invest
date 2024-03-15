@@ -3,11 +3,14 @@
 namespace App\Livewire\Forms;
 
 use App\Models\Action;
-use Livewire\Attributes\Validate;
+use Livewire\Attributes\{Locked, Validate};
 use Livewire\Form;
 
 class ActionForm extends Form
 {
+    #[Locked]
+    public ?int $id = null;
+
     #[Validate('required|min:3')]
     public ?string $active_code = null;
 
@@ -34,14 +37,8 @@ class ActionForm extends Form
     {
         $this->validate();
 
-        $this->magic_number = calculateMagicNumber($this->price, $this->last_dividend);
-
-        if (!is_null($this->missing_for_magic_number)) {
-            $this->missing_for_magic_number = $this->missing_for_magic_number - $this->magic_number;
-        } else {
-            $this->missing_for_magic_number = $this->magic_number;
-        }
-        Action::query()->create([
+        $this->calculateInformationsWithMagicNumber();
+        Action::create([
             'user_id'                  => auth()->user()->id,
             'type_investiment_id'      => $this->type_investiment_id,
             'active_code'              => $this->active_code,
@@ -52,5 +49,19 @@ class ActionForm extends Form
             'missing_for_magic_number' => $this->missing_for_magic_number,
             'type'                     => $this->type,
         ]);
+    }
+
+    /**
+     * @return void
+     */
+    public function calculateInformationsWithMagicNumber(): void
+    {
+        $this->magic_number = calculateMagicNumber($this->price, $this->last_dividend);
+
+        if (!is_null($this->missing_for_magic_number)) {
+            $this->missing_for_magic_number = $this->missing_for_magic_number - $this->magic_number;
+        } else {
+            $this->missing_for_magic_number = $this->magic_number;
+        }
     }
 }
